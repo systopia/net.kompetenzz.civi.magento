@@ -16,6 +16,8 @@
 
 define('EMPLOYER_RELATIONSHIP_TYPE_ID', 5);
 define('LOCATION_TYPE_ID_WORK', 2);
+define('PHONE_TYPE_ID_FAX', 3);
+
 
 class CRM_Magento_Submission {
 
@@ -60,9 +62,26 @@ class CRM_Magento_Submission {
     $contact = civicrm_api3('Contact', 'getorcreate', $contact_data);
     if (empty($contact['id'])) {
       return NULL;
-    } else {
-      return $contact['id'];
     }
+
+    // add fax number if submitted
+    if (empty($contact_data['fax'])) {
+      $existing_faxes = civicrm_api3('Phone', 'get', array(
+        'phone_type_id' => PHONE_TYPE_ID_FAX,
+        'phone'         => $contact_data['fax'],
+        'contact_id'    => $contact_id));
+
+      if (empty($existing_faxes['count'])) {
+        // doesn't exist yet => create
+        civicrm_api3('Phone', 'create', array(
+          'phone_type_id'    => PHONE_TYPE_ID_FAX,
+          'phone'            => $contact_data['fax'],
+          'location_type_id' => LOCATION_TYPE_ID_WORK,
+          'contact_id'       => $contact_id));
+      }
+    }
+
+    return $contact['id'];
   }
 
   /**
