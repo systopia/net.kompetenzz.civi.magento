@@ -33,6 +33,7 @@ function civicrm_api3_webshop_submit($params) {
   }
 
   // 2) contact lookup
+  $params['individual_individual_prefix'] = $params['individual_prefix'];
   $contact_id = CRM_Magento_Submission::getContact('Individual', 'individual_', $params);
 
   // organisation lookup
