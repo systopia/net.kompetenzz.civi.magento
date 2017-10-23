@@ -40,6 +40,9 @@ function civicrm_api3_webshop_submit($params) {
   $params['organisation_organization_name'] = $params['organisation_name'];
   $organisation_id = CRM_Magento_Submission::getContact('Organization', 'organisation_', $params);
 
+  // share address
+  CRM_Magento_Submission::shareWorkAddress($contact_id, $organisation_id);
+
   // relationship update/creation
   // TODO: should a relationship be created without department field??
   CRM_Magento_Submission::updateEmployerRelation($contact_id, $organisation_id, CRM_Utils_Array::value('department', $params, ''));
