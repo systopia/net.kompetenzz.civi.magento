@@ -167,42 +167,42 @@ function _civicrm_api3_webshop_submit_spec(&$params) {
   //   );
   $params['organisation_phone'] = array(
     'name'         => 'organisation_phone',
-    'title'        => 'Phone number',
+    'title'        => 'Organisation phone number',
     'type'         => CRM_Utils_Type::T_STRING,
     'api.required' => 0,
     'description'  => 'Organisation\'s phone',
     );
   $params['organisation_fax'] = array(
     'name'         => 'organisation_fax',
-    'title'        => 'Fax number',
+    'title'        => 'Organisation fax number',
     'type'         => CRM_Utils_Type::T_STRING,
     'api.required' => 0,
     'description'  => 'Organisation\'s fax',
     );
   $params['organisation_street_address'] = array(
     'name'         => 'organisation_street_address',
-    'title'        => 'Street address',
+    'title'        => 'Organisation street address',
     'type'         => CRM_Utils_Type::T_STRING,
     'api.required' => 0,
     'description'  => 'Organisation\'s street_address',
     );
   $params['organisation_postal_code'] = array(
     'name'         => 'organisation_postal_code',
-    'title'        => 'Postal / ZIP code',
+    'title'        => 'Organisation postal / ZIP code',
     'type'         => CRM_Utils_Type::T_STRING,
     'api.required' => 0,
     'description'  => 'Organisation\'s postal_code',
     );
   $params['organisation_city'] = array(
     'name'         => 'organisation_city',
-    'title'        => 'City',
+    'title'        => 'Organisation city',
     'type'         => CRM_Utils_Type::T_STRING,
     'api.required' => 0,
     'description'  => 'Organisation\'s city',
     );
   $params['organisation_country'] = array(
     'name'         => 'individual_country',
-    'title'        => 'Country',
+    'title'        => 'Organisation country',
     'type'         => CRM_Utils_Type::T_STRING,
     'api.required' => 0,
     'description'  => 'Organisation\'s country',
