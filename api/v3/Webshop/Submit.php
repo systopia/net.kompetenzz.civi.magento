@@ -37,7 +37,9 @@ function civicrm_api3_webshop_submit($params) {
   $contact_id = CRM_Magento_Submission::getContact('Individual', 'individual_', $params);
 
   // organisation lookup
-  $params['organisation_organization_name'] = $params['organisation_name'];
+  if (!empty($params['organisation_name'])) {
+    $params['organisation_organization_name'] = $params['organisation_name'];
+  }
   $organisation_id = CRM_Magento_Submission::getContact('Organization', 'organisation_', $params);
 
   // share address

@@ -38,6 +38,23 @@ class CRM_Magento_Submission {
       return NULL;
     }
 
+    // prepare values: country
+    if (!empty($contact_data['country'])) {
+      if (is_numeric($contact_data['country'])) {
+        $contact_data['country_id'] = $contact_data['country'];
+        unset($contact_data['country']);
+      } else {
+        // look up
+        $country = civicrm_api3('Country', 'get', array('iso_code' => $contact_data['country']));
+        if (!empty($country['id'])) {
+          $contact_data['country_id'] = $country['id'];
+          unset($contact_data['country']);
+        } else {
+          throw new API_Exception("Unknown country '{$contact_data['country']}'", 1);
+        }
+      }
+    }
+
     // pass to XCM
     $contact_data['contact_type'] = $contact_type;
     $contact = civicrm_api3('Contact', 'getorcreate', $contact_data);
