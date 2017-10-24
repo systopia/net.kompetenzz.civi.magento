@@ -34,6 +34,21 @@ function civicrm_api3_webshop_submit($params) {
 
   // 2) contact lookup
   $params['individual_individual_prefix'] = $params['individual_prefix'];
+  // Exclude address for now, as we are checking organisation address first.
+  if (!empty($params['organisation_street_address'])) {
+    // TODO: This may include a check for all address components.
+    $individual_submitted_address = array();
+    foreach (array(
+               'individual_street_address','individual_postal_code',
+               'individual_city',
+               'individual_country',
+             ) as $individual_address_component) {
+      if (!empty($params[$individual_address_component])) {
+        $individual_submitted_address[$individual_address_component] = $params[$individual_address_component];
+        unset($params[$individual_address_component]);
+      }
+    }
+  }
   $contact_id = CRM_Magento_Submission::getContact('Individual', 'individual_', $params);
 
   // organisation lookup
@@ -43,7 +58,13 @@ function civicrm_api3_webshop_submit($params) {
   $organisation_id = CRM_Magento_Submission::getContact('Organization', 'organisation_', $params);
 
   // share address
-  CRM_Magento_Submission::shareWorkAddress($contact_id, $organisation_id);
+  if (!CRM_Magento_Submission::shareWorkAddress($contact_id, $organisation_id)) {
+    // Address is not shared, use submitted address.
+    if (!empty($individual_submitted_address)) {
+      $individual_submitted_address['contact_id'] = $contact_id;
+      civicrm_api3('Address', 'create', $individual_submitted_address);
+    }
+  }
 
   // relationship update/creation
   // TODO: should a relationship be created without department field??

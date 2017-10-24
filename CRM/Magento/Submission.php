@@ -90,7 +90,7 @@ class CRM_Magento_Submission {
   public static function shareWorkAddress($contact_id, $organisation_id) {
     if (empty($organisation_id)) {
       // only if organisation exists
-      return;
+      return FALSE;
     }
 
     // check if organisation has a WORK address
@@ -99,7 +99,7 @@ class CRM_Magento_Submission {
       'location_type_id' => LOCATION_TYPE_ID_WORK));
     if ($existing_org_addresses['count'] <= 0) {
       // organisation doens't have a WORK address
-      return;
+      return FALSE;
     }
 
     // check if contact already has a WORK address
@@ -108,7 +108,7 @@ class CRM_Magento_Submission {
       'location_type_id' => LOCATION_TYPE_ID_WORK));
     if ($existing_contact_addresses['count'] > 0) {
       // contact already has a WORK address
-      return;
+      return FALSE;
     }
 
     // create a shared address
@@ -117,6 +117,7 @@ class CRM_Magento_Submission {
     $address['master_id']  = $address['id'];
     unset($address['id']);
     civicrm_api3('Address', 'create', $address);
+    return TRUE;
   }
 
   /**
