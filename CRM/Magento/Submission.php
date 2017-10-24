@@ -35,6 +35,8 @@ class CRM_Magento_Submission {
       }
     }
 
+    $contact_data['location_type_id'] = $data['location_type_id'];
+
     // if no parameters given, do nothing
     if (empty($contact_data)) {
       return NULL;
@@ -76,7 +78,7 @@ class CRM_Magento_Submission {
         civicrm_api3('Phone', 'create', array(
           'phone_type_id'    => PHONE_TYPE_ID_FAX,
           'phone'            => $contact_data['fax'],
-          'location_type_id' => LOCATION_TYPE_ID_WORK,
+          'location_type_id' => $contact_data['location_type_id'],
           'contact_id'       => $contact['id']));
       }
     }

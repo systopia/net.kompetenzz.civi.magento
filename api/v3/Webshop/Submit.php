@@ -57,39 +57,45 @@ function civicrm_api3_webshop_submit($params) {
   // organisation lookup
   if (!empty($params['organisation_name'])) {
     $params['organisation_organization_name'] = $params['organisation_name'];
+    $organisation_id = CRM_Magento_Submission::getContact('Organization', 'organisation_', $params);
   }
-  $organisation_id = CRM_Magento_Submission::getContact('Organization', 'organisation_', $params);
+  $address_shared = (isset($organisation_id) ? CRM_Magento_Submission::shareWorkAddress($contact_id, $organisation_id) : FALSE);
 
-  // share address
-  if (!CRM_Magento_Submission::shareWorkAddress($contact_id, $organisation_id)) {
-    // Address is not shared, use submitted address.
-    if (!empty($individual_submitted_address)) {
-      $individual_submitted_address['contact_id'] = $contact_id;
-      civicrm_api3('Address', 'create', $individual_submitted_address);
-    }
+  // Address is not shared, use submitted address.
+  if (!$address_shared && !empty($individual_submitted_address)) {
+    $individual_submitted_address['contact_id'] = $contact_id;
+    $individual_submitted_address['location_type_id'] = $params['location_type_id'];
+    civicrm_api3('Address', 'create', $individual_submitted_address);
   }
 
   // relationship update/creation
-  // TODO: should a relationship be created without department field??
-  CRM_Magento_Submission::updateEmployerRelation($contact_id, $organisation_id, CRM_Utils_Array::value('department', $params, ''));
+  if (isset($organisation_id)) {
+    // TODO: should a relationship be created without department field??
+    CRM_Magento_Submission::updateEmployerRelation($contact_id, $organisation_id, CRM_Utils_Array::value('department', $params, ''));
+  }
 
   // create ws orders
   $orders = array();
   foreach ($params['wsorders'] as $order_data) {
     // if contact_id is previously set, the values are probably wrong anyway ... overwrite!
     $order_data['contact_id'] = $contact_id;
+    if (isset($organisation_id)) {
+      $order_data['organisation_id'] = $organisation_id;
+    }
 
-    // creat order via webshop
+    // Create order via Webshop API.
     $order = civicrm_api3('Webshop', 'createorder', $order_data);
     $orders[] = $order['id'];
   }
 
-  // TODO: return values
   $foo = NULL;
-  return civicrm_api3_create_success($orders, array(), NULL, NULL, $foo, array(
+  $success_data = array(
     'individual_id' => $contact_id,
-    'organization_id' => $organisation_id,
-  ));
+  );
+  if (isset($organisation_id)) {
+    $success_data['organization_id'] = $organisation_id;
+  }
+  return civicrm_api3_create_success($orders, array(), NULL, NULL, $foo, $success_data);
 }
 
 /**
