@@ -22,6 +22,9 @@ function civicrm_api3_webshop_submit($params) {
   // check location type
   $location_type = civicrm_api3('LocationType', 'getsingle', array(
     'id' => $params['location_type_id']));
+  if ($location_type['is_error'] == 1) {
+    return civicrm_api3_create_error('Non-existing location type.');
+  }
 
   // check orders
   if (!empty($params['wsorders']) && is_string($params['wsorders'])) {
