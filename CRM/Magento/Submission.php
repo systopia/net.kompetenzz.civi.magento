@@ -65,11 +65,11 @@ class CRM_Magento_Submission {
     }
 
     // add fax number if submitted
-    if (empty($contact_data['fax'])) {
+    if (!empty($contact_data['fax'])) {
       $existing_faxes = civicrm_api3('Phone', 'get', array(
         'phone_type_id' => PHONE_TYPE_ID_FAX,
         'phone'         => $contact_data['fax'],
-        'contact_id'    => $contact_id));
+        'contact_id'    => $contact['id']));
 
       if (empty($existing_faxes['count'])) {
         // doesn't exist yet => create
@@ -77,7 +77,7 @@ class CRM_Magento_Submission {
           'phone_type_id'    => PHONE_TYPE_ID_FAX,
           'phone'            => $contact_data['fax'],
           'location_type_id' => LOCATION_TYPE_ID_WORK,
-          'contact_id'       => $contact_id));
+          'contact_id'       => $contact['id']));
       }
     }
 
