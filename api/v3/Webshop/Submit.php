@@ -29,7 +29,7 @@ function civicrm_api3_webshop_submit($params) {
     $params['wsorders'] = json_decode($params['wsorders'], TRUE);
   }
   if (!is_array($params['wsorders'])) {
-    return civicrm_api3_create_error("Field 'wsorders' is not an array!");
+    return civicrm_api3_create_error("Field 'wsorders' is not an array.");
   }
 
   // 2) contact lookup
@@ -82,7 +82,11 @@ function civicrm_api3_webshop_submit($params) {
   }
 
   // TODO: return values
-  return civicrm_api3_create_success($orders);
+  $foo = NULL;
+  return civicrm_api3_create_success($orders, array(), NULL, NULL, $foo, array(
+    'individual_id' => $contact_id,
+    'organization_id' => $organisation_id,
+  ));
 }
 
 /**
@@ -95,7 +99,7 @@ function _civicrm_api3_webshop_submit_spec(&$params) {
     'name'         => 'location_type_id',
     'title'        => 'Location Type',
     'type'         => CRM_Utils_Type::T_INT,
-    'api.required' => 1,
+    'api.default'  => 2,
     'description'  => 'Defines the location type to be used for address, email, phone',
     );
 
@@ -228,7 +232,7 @@ function _civicrm_api3_webshop_submit_spec(&$params) {
     'description'  => 'Organisation\'s city',
     );
   $params['organisation_country'] = array(
-    'name'         => 'individual_country',
+    'name'         => 'organisation_country',
     'title'        => 'Organisation country',
     'type'         => CRM_Utils_Type::T_STRING,
     'api.required' => 0,
