@@ -23,10 +23,18 @@ function civicrm_api3_webshop_createorder($params) {
     'target_id'          => empty($params['organisation_id']) ? $params['contact_id'] : $params['organisation_id'],
     'activity_type_id'   => CRM_Core_OptionGroup::getValue('activity_type', 'ws_order', 'name'),
     'subject'            => $params['subject'],
-    'activity_date_time' => date('YmdHis'),
+    'activity_date_time' => date('YmdHis'), // default, can be overwritten below
     'source_contact_id'  => $params['contact_id'],
     'status_id'          => CRM_Core_OptionGroup::getValue('activity_status', 'Completed', 'name'),
   );
+
+  if (!empty($params['activity_date_time'])) {
+    // try parsing the date string
+    $activity_date_time = strtotime($params['activity_date_time']);
+    if ($activity_date_time) {
+      $activity_data['details'] = date('YmdHis', $activity_date_time);
+    }
+  }
 
   if (!empty($params['details'])) {
     $activity_data['details'] = $params['details'];
@@ -73,6 +81,13 @@ function _civicrm_api3_webshop_createorder_spec(&$params) {
     'type'         => CRM_Utils_Type::T_STRING,
     'api.default'  => 'angelegt von Magento Webshop API',
     'description'  => 'Order Details',
+    );
+  $params['activity_date_time'] = array(
+    'name'         => 'activity_date_time',
+    'title'        => 'Order date',
+    'type'         => CRM_Utils_Type::T_STRING,
+    'api.required' => 0,
+    'description'  => 'Date to be stored in the order activity.',
     );
   $params['magento_order_id'] = array(
     'name'         => 'magento_order_id',
