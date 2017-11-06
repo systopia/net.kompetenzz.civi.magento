@@ -32,7 +32,7 @@ function civicrm_api3_webshop_createorder($params) {
     // try parsing the date string
     $activity_date_time = strtotime($params['activity_date_time']);
     if ($activity_date_time) {
-      $activity_data['details'] = date('YmdHis', $activity_date_time);
+      $activity_data['activity_date_time'] = date('YmdHis', $activity_date_time);
     }
   }
 
