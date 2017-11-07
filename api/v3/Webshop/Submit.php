@@ -37,6 +37,18 @@ function civicrm_api3_webshop_submit($params) {
 
   // 2) contact lookup
   $params['individual_individual_prefix'] = $params['individual_prefix'];
+
+  // Prepare field "Magento ID".
+  if (!empty($params['individual_magento_id'])) {
+    $magento_id_field = civicrm_api3('CustomField', 'get', array(
+      'sequential' => 1,
+      'name' => "Magento_Id",
+    ));
+    if ($magento_id_field['count'] == 1) {
+      $params['individual_custom_' . $magento_id_field['id']] = $params['individual_magento_id'];
+    }
+  }
+
   // Exclude address for now, as we are checking organisation address first.
   if (!empty($params['organisation_street_address'])) {
     // TODO: This may include a check for all address components.
@@ -183,6 +195,13 @@ function _civicrm_api3_webshop_submit_spec(&$params) {
     'api.required' => 0,
     'description'  => 'Contact\'s country',
     );
+  $params['individual_magento_id'] = array(
+    'name'         => 'individual_magento_id',
+    'title'        => 'Magento ID',
+    'type'         => CRM_Utils_Type::T_STRING,
+    'api.required' => 0,
+    'description'  => 'Contact\'s Magento ID',
+  );
 
   // Organisation data
   $params['organisation_name'] = array(
