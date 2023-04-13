@@ -2,7 +2,7 @@
 <extension key="net.kompetenzz.civi.magento" type="module">
   <file>magento</file>
   <name>Magento Anbindung</name>
-  <description>API für Webshop (Magento) Anbindung</description>
+  <description>API f&#xFC;r Webshop (Magento) Anbindung</description>
   <license>AGPL-3.0</license>
   <maintainer>
     <author>SYSTOPIA</author>
@@ -20,8 +20,13 @@
   <compatibility>
     <ver>4.7</ver>
   </compatibility>
-  <comments></comments>
+  <comments/>
   <civix>
     <namespace>CRM/Magento</namespace>
+    <format>23.02.1</format>
   </civix>
+  <classloader>
+    <psr0 prefix="CRM_" path="."/>
+    <psr4 prefix="Civi\" path="Civi"/>
+  </classloader>
 </extension>
